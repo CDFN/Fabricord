@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+    "WorldChangeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
