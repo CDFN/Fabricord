@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "fabricord",
+  "version": "${version}",
+  "name": "Fabricord",
+  "description": "",
+  "authors": [
+    "CDFN"
+  ],
+  "contact": {
+    "repo": "https://github.com/CDFN/Fabricord"
+  },
+  "license": "MIT",
+  "icon": "assets/fabricord/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "pl.cdfn.fabricord.client.FabricordClient"
+    ],
+    "main": [
+      "pl.cdfn.fabricord.Fabricord"
+    ]
+  },
+  "mixins": [
+    "fabricord.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.1",
+    "fabric": "*",
+    "minecraft": "1.16.5"
+  }
+}
