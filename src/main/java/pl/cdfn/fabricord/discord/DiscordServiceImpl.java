@@ -21,7 +21,6 @@ public class DiscordServiceImpl implements DiscordService {
 
   @Override
   public void initialize() {
-    // TODO: Config for applicationId
     DiscordRPC.discordInitialize("802579600856055878", HANDLERS, true);
     richPresence.largeImageKey = AssetKey.LOGO.getKey();
     richPresence.details = "Loading...";
@@ -46,8 +45,7 @@ public class DiscordServiceImpl implements DiscordService {
             .orElse(AssetKey.Dimension.UNKNOWN);
     richPresence.largeImageKey = dimensionType.getKey();
     // THE_NETHER -> The Nether
-    richPresence.largeImageText =
-        WordUtils.capitalize(dimensionType.name().toLowerCase().replace("_", " "));
+    richPresence.largeImageText = WordUtils.capitalize(dimensionType.name().toLowerCase().replace("_", " "));
     DiscordRPC.discordUpdatePresence(richPresence);
   }
 
