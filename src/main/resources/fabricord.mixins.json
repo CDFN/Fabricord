@@ -7,7 +7,7 @@
   ],
   "client": [
     "WorldChangeMixin",
-    "ServerJoinMixin"
+    "ServerConnectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
