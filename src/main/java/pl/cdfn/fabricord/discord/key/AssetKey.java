@@ -1,7 +1,5 @@
 package pl.cdfn.fabricord.discord.key;
 
-import java.util.Collection;
-
 public class AssetKey {
   public static final AssetKey LOGO = new AssetKey("logo");
   public static final AssetKey MISSING = new AssetKey("missing");
