@@ -14,18 +14,8 @@ import pl.cdfn.fabricord.Fabricord;
 public class DiscordServiceImpl implements DiscordService {
   private static final DiscordEventHandlers HANDLERS =
       new DiscordEventHandlers.Builder()
-          .setReadyEventHandler(
-              user ->
-                  Fabricord.LOGGER.log(
-                      Level.INFO,
-                      "Discord RPC is ready: {0} {1}",
-                      new Object[] {user.username, user.discriminator}))
-          .setDisconnectedEventHandler(
-              (errorCode, message) ->
-                  Fabricord.LOGGER.log(
-                      Level.WARNING,
-                      "Discord RPC has disconnected: {0} {1}",
-                      new Object[] {errorCode, message}))
+          .setReadyEventHandler(user -> Fabricord.LOGGER.log(Level.INFO, "Discord RPC is ready: {0} {1}", new Object[] {user.username, user.discriminator}))
+          .setDisconnectedEventHandler((errorCode, message) -> Fabricord.LOGGER.log(Level.WARNING, "Discord RPC has disconnected: {0} {1}", new Object[] {errorCode, message}))
           .build();
   private final DiscordRichPresence richPresence = new DiscordRichPresence();
 
@@ -51,11 +41,7 @@ public class DiscordServiceImpl implements DiscordService {
   public void changeDimension(ServerWorld targetDimension) {
     AssetKey.Dimension dimensionType =
         Arrays.stream(AssetKey.Dimension.values())
-            .filter(
-                entry ->
-                    entry
-                        .name()
-                        .equalsIgnoreCase(targetDimension.getRegistryKey().getValue().getPath()))
+            .filter(entry -> entry.name().equalsIgnoreCase(targetDimension.getRegistryKey().getValue().getPath()))
             .findFirst()
             .orElse(AssetKey.Dimension.UNKNOWN);
     richPresence.largeImageKey = dimensionType.getKey();
