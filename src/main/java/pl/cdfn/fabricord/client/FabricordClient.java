@@ -1,6 +1,5 @@
 package pl.cdfn.fabricord.client;
 
-import com.mojang.serialization.Lifecycle;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,6 +18,5 @@ public class FabricordClient implements ClientModInitializer {
     DimensionChangeCallback.EVENT.register(discordService::changeDimension);
     ClientLifecycleEvents.CLIENT_STARTED.register(discordService::enabled);
     ClientLifecycleEvents.CLIENT_STOPPING.register(discordService::shutdown);
-
   }
 }

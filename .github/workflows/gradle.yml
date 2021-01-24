@@ -1,6 +1,3 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
 name: Gradle Build
 
 on:
@@ -22,5 +19,7 @@ jobs:
         java-version: 11
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Verify Google codestyle
+      run: ./gradlew verGJF
     - name: Build with Gradle
       run: ./gradlew build

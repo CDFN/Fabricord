@@ -6,14 +6,11 @@ import pl.cdfn.fabricord.client.FabricordClient;
 
 public interface DiscordService {
 
-  /**
-   * Called when mod is being loaded ({@link FabricordClient#onInitializeClient()})
-   */
+  /** Called when mod is being loaded ({@link FabricordClient#onInitializeClient()}) */
   void initialize();
 
   /**
-   * Called when client got enabled and
-   * it's ready to pass info about it's state.
+   * Called when client got enabled and it's ready to pass info about it's state.
    *
    * @param client enabled client
    */
