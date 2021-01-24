@@ -11,15 +11,11 @@ import net.minecraft.server.world.ServerWorld;
  */
 public interface DimensionChangeCallback {
 
-  Event<DimensionChangeCallback> EVENT =
-      EventFactory.createArrayBacked(
-          DimensionChangeCallback.class,
-          handlers ->
-              dimension -> {
-                for (DimensionChangeCallback callback : handlers) {
-                  callback.changeDimension(dimension);
-                }
-              });
+  Event<DimensionChangeCallback> EVENT = EventFactory.createArrayBacked(DimensionChangeCallback.class, handlers -> dimension -> {
+    for (DimensionChangeCallback callback : handlers) {
+      callback.changeDimension(dimension);
+    }
+  });
 
   void changeDimension(ServerWorld target);
 }

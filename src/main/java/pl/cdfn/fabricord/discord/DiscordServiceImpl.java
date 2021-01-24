@@ -10,6 +10,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.world.ServerWorld;
 import org.apache.commons.lang3.text.WordUtils;
 import pl.cdfn.fabricord.Fabricord;
+import pl.cdfn.fabricord.discord.key.AssetKey;
+import pl.cdfn.fabricord.discord.key.DimensionAssetKey;
 
 public class DiscordServiceImpl implements DiscordService {
   private static final DiscordEventHandlers HANDLERS =
@@ -18,6 +20,9 @@ public class DiscordServiceImpl implements DiscordService {
           .setDisconnectedEventHandler((errorCode, message) -> Fabricord.LOGGER.log(Level.WARNING, "Discord RPC has disconnected: {0} {1}", new Object[] {errorCode, message}))
           .build();
   private final DiscordRichPresence richPresence = new DiscordRichPresence();
+
+  private boolean isConnected = false;
+  private boolean isLocalhost = false;
 
   @Override
   public void initialize() {
@@ -38,19 +43,35 @@ public class DiscordServiceImpl implements DiscordService {
 
   @Override
   public void changeDimension(ServerWorld targetDimension) {
-    AssetKey.Dimension dimensionType =
-        Arrays.stream(AssetKey.Dimension.values())
-            .filter(entry -> entry.name().equalsIgnoreCase(targetDimension.getRegistryKey().getValue().getPath()))
+    AssetKey dimensionType = DimensionAssetKey.DIMENSION_ASSET_KEYS
+            .stream()
+            .filter(entry -> entry.getKey().equalsIgnoreCase(targetDimension.getRegistryKey().getValue().getPath()))
             .findFirst()
-            .orElse(AssetKey.Dimension.UNKNOWN);
+            .orElse(new DimensionAssetKey(AssetKey.MISSING.getKey()));
     richPresence.largeImageKey = dimensionType.getKey();
     // THE_NETHER -> The Nether
-    richPresence.largeImageText = WordUtils.capitalize(dimensionType.name().toLowerCase().replace("_", " "));
+    richPresence.largeImageText = WordUtils.capitalize(dimensionType.getKey().replace("_", " "));
     DiscordRPC.discordUpdatePresence(richPresence);
   }
 
   @Override
   public void shutdown(MinecraftClient minecraftClient) {
     DiscordRPC.discordShutdown();
+  }
+
+  public boolean isConnected() {
+    return isConnected;
+  }
+
+  public void setConnected(boolean connected) {
+    isConnected = connected;
+  }
+
+  public boolean isLocalhost() {
+    return isLocalhost;
+  }
+
+  public void setLocalhost(boolean localhost) {
+    isLocalhost = localhost;
   }
 }
