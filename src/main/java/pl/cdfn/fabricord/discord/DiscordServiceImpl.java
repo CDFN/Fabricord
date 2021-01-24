@@ -1,7 +1,5 @@
 package pl.cdfn.fabricord.discord;
 
-import java.util.Arrays;
-import java.util.logging.Level;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
 import net.arikia.dev.drpc.DiscordRichPresence;
@@ -13,15 +11,16 @@ import pl.cdfn.fabricord.Fabricord;
 import pl.cdfn.fabricord.discord.key.AssetKey;
 import pl.cdfn.fabricord.discord.key.DimensionAssetKey;
 
+import java.util.logging.Level;
+
 public class DiscordServiceImpl implements DiscordService {
   private static final DiscordEventHandlers HANDLERS =
-      new DiscordEventHandlers.Builder()
-          .setReadyEventHandler(user -> Fabricord.LOGGER.log(Level.INFO, "Discord RPC is ready: {0} {1}", new Object[] {user.username, user.discriminator}))
-          .setDisconnectedEventHandler((errorCode, message) -> Fabricord.LOGGER.log(Level.WARNING, "Discord RPC has disconnected: {0} {1}", new Object[] {errorCode, message}))
-          .build();
+          new DiscordEventHandlers.Builder()
+                  .setReadyEventHandler(user -> Fabricord.LOGGER.log(Level.INFO, "Discord RPC is ready: {0} {1}", new Object[]{user.username, user.discriminator}))
+                  .setDisconnectedEventHandler((errorCode, message) -> Fabricord.LOGGER.log(Level.WARNING, "Discord RPC has disconnected: {0} {1}", new Object[]{errorCode, message}))
+                  .build();
   private final DiscordRichPresence richPresence = new DiscordRichPresence();
 
-  private boolean isConnected = false;
   private boolean isLocalhost = false;
 
   @Override
@@ -43,14 +42,21 @@ public class DiscordServiceImpl implements DiscordService {
 
   @Override
   public void changeDimension(ServerWorld targetDimension) {
-    AssetKey dimensionType = DimensionAssetKey.DIMENSION_ASSET_KEYS
-            .stream()
-            .filter(entry -> entry.getKey().equalsIgnoreCase(targetDimension.getRegistryKey().getValue().getPath()))
-            .findFirst()
-            .orElse(new DimensionAssetKey(AssetKey.MISSING.getKey()));
-    richPresence.largeImageKey = dimensionType.getKey();
-    // THE_NETHER -> The Nether
-    richPresence.largeImageText = WordUtils.capitalize(dimensionType.getKey().replace("_", " "));
+    DimensionAssetKey assetKey = getAssetKeyFromDimensionName(targetDimension.getRegistryKey().getValue().getPath());
+    richPresence.largeImageKey = assetKey.getKeyWithPrefix();
+    // the_nether -> The Nether
+    richPresence.largeImageText = WordUtils.capitalize(assetKey.getKey().replace("_", " "));
+    DiscordRPC.discordUpdatePresence(richPresence);
+  }
+
+  @Override
+  public void joinServer(boolean localhost, String dimensionName) {
+    this.isLocalhost = localhost;
+    DimensionAssetKey assetKey = getAssetKeyFromDimensionName(dimensionName);
+    richPresence.largeImageKey = assetKey.getKeyWithPrefix();
+    // the_nether -> The Nether
+    richPresence.largeImageText = WordUtils.capitalize(assetKey.getKey().replace("_", " "));
+    richPresence.state = localhost ? "Singleplayer" : "Multiplayer";
     DiscordRPC.discordUpdatePresence(richPresence);
   }
 
@@ -59,12 +65,12 @@ public class DiscordServiceImpl implements DiscordService {
     DiscordRPC.discordShutdown();
   }
 
-  public boolean isConnected() {
-    return isConnected;
-  }
-
-  public void setConnected(boolean connected) {
-    isConnected = connected;
+  private DimensionAssetKey getAssetKeyFromDimensionName(String dimensionName) {
+    return DimensionAssetKey.DIMENSION_ASSET_KEYS
+            .stream()
+            .filter(entry -> entry.getKey().equalsIgnoreCase(dimensionName))
+            .findFirst()
+            .orElse(new DimensionAssetKey(AssetKey.MISSING.getKey()));
   }
 
   public boolean isLocalhost() {

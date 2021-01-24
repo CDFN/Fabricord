@@ -24,6 +24,13 @@ public interface DiscordService {
   void changeDimension(ServerWorld targetDimension);
 
   /**
+   *
+   * @param localhost states whether connection is made to helps identifying singleplayer/multiplayer.
+   * @param dimensionName dimension player is going to spawn in
+   */
+  void joinServer(boolean localhost, String dimensionName);
+
+  /**
    * Called when client is shutting down.
    *
    * @param minecraftClient client which is being stopped
