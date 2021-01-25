@@ -1,11 +1,11 @@
 package pl.cdfn.fabricord;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import net.fabricmc.api.ModInitializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Fabricord implements ModInitializer {
-  public static final Logger LOGGER = LogManager.getLogManager().getLogger("Fabricord");
+  public static final Logger LOGGER = LogManager.getLogger();
 
   @Override
   public void onInitialize() {}

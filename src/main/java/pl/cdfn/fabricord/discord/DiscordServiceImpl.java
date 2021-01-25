@@ -2,34 +2,32 @@ package pl.cdfn.fabricord.discord;
 
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
-import net.arikia.dev.drpc.DiscordRichPresence;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.world.ServerWorld;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.logging.log4j.Level;
 import pl.cdfn.fabricord.Fabricord;
 import pl.cdfn.fabricord.discord.key.AssetKey;
 import pl.cdfn.fabricord.discord.key.DimensionAssetKey;
 import pl.cdfn.fabricord.discord.rpc.RichPresenceRenderer;
 
-import java.util.logging.Level;
-
 public class DiscordServiceImpl implements DiscordService {
   private static final DiscordEventHandlers HANDLERS = new DiscordEventHandlers.Builder()
-                  .setReadyEventHandler(user -> Fabricord.LOGGER.log(Level.INFO, "Discord RPC is ready: {0} {1}", new Object[]{user.username, user.discriminator}))
-                  .setDisconnectedEventHandler((errorCode, message) -> Fabricord.LOGGER.log(Level.WARNING, "Discord RPC has disconnected: {0} {1}", new Object[]{errorCode, message}))
-                  .build();
+          .setReadyEventHandler(user -> Fabricord.LOGGER.info("Discord RPC is ready: {} {}", user.username, user.discriminator))
+          .setDisconnectedEventHandler((errorCode, message) -> Fabricord.LOGGER.warn("Discord RPC has disconnected: {} {}", errorCode, message))
+          .build();
 
   private boolean isLocalhost = false;
 
   @Override
   public void initialize() {
+    Fabricord.LOGGER.info("Discord RPC initialization started");
     DiscordRPC.discordInitialize("802579600856055878", HANDLERS, true);
     DiscordRPC.discordUpdatePresence(RichPresenceRenderer.renderLoading());
   }
 
   @Override
   public void enabled(MinecraftClient client) {
+    Fabricord.LOGGER.info("Discord RPC started successfully");
     DiscordRPC.discordUpdatePresence(RichPresenceRenderer.renderIdle());
   }
 
